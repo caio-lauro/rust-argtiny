@@ -193,7 +193,7 @@ impl std::error::Error for ParseError {}
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::{*, ArgumentType::*};
     use crate::macro_types::*;
 
     #[test]
