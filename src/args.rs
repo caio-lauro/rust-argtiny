@@ -1,6 +1,9 @@
 use std::{collections::HashMap, fmt::Display};
 
-use crate::macro_types::{ArgumentType, FromParsedValue, ParsedValue};
+use crate::macro_types::{
+    ArgumentType::{self, *},
+    FromParsedValue, ParsedValue,
+};
 
 pub trait ArgumentTrait {
     fn is_required(&self) -> bool;
@@ -41,11 +44,11 @@ impl<'a> ArgumentTrait for Argument<'a> {
 
 impl<'a> Argument<'a> {
     pub fn from(name: &'a str, argtype: ArgumentType) -> Argument<'a> {
-        assert!(!name.starts_with('-'), "required argument name must not start with '-', got: {name:?}");
-        Argument {
-            name,
-            argtype,
-        }
+        assert!(
+            !name.starts_with('-'),
+            "required argument name must not start with '-', got: {name:?}"
+        );
+        Argument { name, argtype }
     }
 }
 
@@ -83,10 +86,10 @@ impl<'a> ArgumentTrait for OptionalArgument<'a> {
 }
 
 impl<'a> OptionalArgument<'a> {
-    /// Creates an `OptionalArgument` from `long` and `short` forms as `&str`, 
+    /// Creates an `OptionalArgument` from `long` and `short` forms as `&str`,
     /// an `ArgumentType` and a `default` value. \
     /// Use the same type for both `argtype` and `default`.
-    /// 
+    ///
     /// Don't use hyphens when specifying the long and short forms of the argument.
     pub fn from(
         long: &'a str,
@@ -137,9 +140,9 @@ impl ParsedArgs {
 
     /// Gets the value of a given argument directly, in case you don't want
     /// to use pattern matching. \
-    /// Using the internal method `get`, panics in case the argument doesn't 
+    /// Using the internal method `get`, panics in case the argument doesn't
     /// exist.
-    pub fn get_value<T: FromParsedValue> (&self, name: &str) -> T {
+    pub fn get_value<T: FromParsedValue>(&self, name: &str) -> T {
         T::from_parsed(self.get(name), name)
     }
 }
@@ -152,7 +155,11 @@ pub enum ParseError {
     /// Missing value for argument
     MissingValue(String),
     /// Different types given for argtype and default
-    WrongType { name: String, expected: ArgumentType, given: String },
+    WrongType {
+        name: String,
+        expected: ArgumentType,
+        given: String,
+    },
     /// Unknown argument, not added to ArgumentParsed
     UnknownArgument(String),
     /// Argument already seen once
@@ -164,18 +171,23 @@ pub enum ParseError {
 impl Display for ParseError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ParseError::MissingRequired(name) =>
-                write!(f, "missing required argument: {name}"),
-            ParseError::MissingValue(name) =>
-                write!(f, "argument '{name}' requires a value but none was given"),
-            ParseError::WrongType { name, expected, given } =>
-                write!(f, "argument '{name}' expects value of type {expected:?} given: {given}"),
-            ParseError::UnknownArgument(name) =>
-                write!(f, "unknown argument: {name}"),
-            ParseError::DuplicateArgument(name) =>
-                write!(f, "argument '{name}' was given more than once"),
-            ParseError::TooManyArguments =>
-                write!(f, "too many positional arguments"),
+            ParseError::MissingRequired(name) => write!(f, "missing required argument: {name}"),
+            ParseError::MissingValue(name) => {
+                write!(f, "argument '{name}' requires a value but none was given")
+            }
+            ParseError::WrongType {
+                name,
+                expected,
+                given,
+            } => write!(
+                f,
+                "argument '{name}' expects value of type {expected:?} given: {given}"
+            ),
+            ParseError::UnknownArgument(name) => write!(f, "unknown argument: {name}"),
+            ParseError::DuplicateArgument(name) => {
+                write!(f, "argument '{name}' was given more than once")
+            }
+            ParseError::TooManyArguments => write!(f, "too many positional arguments"),
         }
     }
 }
