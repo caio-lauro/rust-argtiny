@@ -193,3 +193,26 @@ impl Display for ParseError {
 }
 
 impl std::error::Error for ParseError {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::macro_types::*;
+
+    #[test]
+    fn argument_from_valid_name() {
+        Argument::from("argument", Text);
+    }
+
+    #[test]
+    #[should_panic]
+    fn argument_from_name_with_dash_panics() {
+        Argument::from("--argument", Text);
+    }
+
+    #[test]
+    #[should_panic]
+    fn optional_argument_mismatched_default_panics() {
+        OptionalArgument::from("argument", "a", Boolean, ParsedValue::Integer(0));
+    }
+}
