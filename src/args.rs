@@ -50,10 +50,9 @@ impl<'a> Argument<'a> {
 }
 
 /// Type of argument to be used in case you want an optional argument. \
-/// And when you want to specify both long and short forms for it. \
-/// The name of the argument will be the long form.
+/// The name of the argument will be considered as the long form of the argument.
 ///
-/// Specify only the form for long and short, don't use -- or -.
+/// Don't use hyphens when specifying the long and short forms of the argument.
 pub struct OptionalArgument<'a> {
     long: &'a str,
     short: &'a str,
@@ -84,7 +83,11 @@ impl<'a> ArgumentTrait for OptionalArgument<'a> {
 }
 
 impl<'a> OptionalArgument<'a> {
-    /// Specify only the form for long and short, don't use -- or -.
+    /// Creates an `OptionalArgument` from `long` and `short` forms as `&str`, 
+    /// an `ArgumentType` and a `default` value. \
+    /// Use the same type for both `argtype` and `default`.
+    /// 
+    /// Don't use hyphens when specifying the long and short forms of the argument.
     pub fn from(
         long: &'a str,
         short: &'a str,
@@ -104,6 +107,11 @@ impl<'a> OptionalArgument<'a> {
     }
 }
 
+/// Stores the values of the arguments given to `parse`. \
+/// For required arguments, stores in the order given. \
+/// For optional arguments, if given, tries to store the next
+/// available `String` as its value, converted to its type. \
+/// If not given, stores the default value.
 pub struct ParsedArgs {
     values: HashMap<String, ParsedValue>,
 }
@@ -119,12 +127,18 @@ impl ParsedArgs {
         self.values.insert(name, value);
     }
 
+    /// Gets the value of a given argument as a reference to ParsedValue. \
+    /// Panics in case the argument doesn't exist.
     pub fn get(&self, name: &str) -> &ParsedValue {
         self.values
             .get(name)
             .unwrap_or_else(|| panic!("Argument {name} not found"))
     }
 
+    /// Gets the value of a given argument directly, in case you don't want
+    /// to use pattern matching. \
+    /// Using the internal method `get`, panics in case the argument doesn't 
+    /// exist.
     pub fn get_value<T: FromParsedValue> (&self, name: &str) -> T {
         T::from_parsed(self.get(name), name)
     }
