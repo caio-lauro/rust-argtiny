@@ -118,6 +118,16 @@ impl ParsedArgs {
     pub(crate) fn insert(&mut self, name: String, value: ParsedValue) {
         self.values.insert(name, value);
     }
+
+    pub fn get(&self, name: &str) -> &ParsedValue {
+        self.values
+            .get(name)
+            .unwrap_or_else(|| panic!("Argument {name} not found"))
+    }
+
+    pub fn get_value<T: FromParsedValue> (&self, name: &str) -> T {
+        T::from_parsed(self.get(name), name)
+    }
 }
 
 #[derive(Debug)]
