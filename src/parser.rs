@@ -8,6 +8,8 @@ struct OptionalEntry {
     seen: bool,
 }
 
+/// Argument parser, to be used with std::env::args or other types that implement 
+/// `IntoIterator` and have `String` as items.
 pub struct ArgumentParser {
     required_args: Vec<Box<dyn ArgumentTrait>>,
     optional_args: Vec<OptionalEntry>,
@@ -16,7 +18,7 @@ pub struct ArgumentParser {
 }
 
 impl ArgumentParser {
-    /// Creates an ArgumentParser, which will parse any and all arguments given to it.
+    /// Creates an `ArgumentParser`, which will parse any and all arguments given to it, after the **first** one.
     pub fn new() -> Self {
         ArgumentParser {
             required_args: vec![],
@@ -26,7 +28,7 @@ impl ArgumentParser {
         }
     }
 
-    /// Adds an argument of either type: Argument or OptionalArgument
+    /// Adds an argument of either type: `Argument` or `OptionalArgument`
     pub fn add_arg(mut self, arg: impl ArgumentTrait + 'static) -> Self {
         if arg.is_required() {
             if arg.get_argtype() == Boolean {
@@ -53,7 +55,7 @@ impl ArgumentParser {
     /// `args` must implement `IntoIterator` trait and each item must be of type `String`.
     ///
     /// Parses *required* arguments in the order they were given. \
-    /// For optional arguments, if they are not seen, the default value is used.
+    /// For *optional* arguments, if they are not seen, their default value is used.
     pub fn parse(
         mut self,
         args: impl IntoIterator<Item = String>,
