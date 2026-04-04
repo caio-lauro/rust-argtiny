@@ -28,7 +28,7 @@ macro_rules! define_arg_types {
                 fn from_parsed(val: &ParsedValue, name: &str) -> Self {
                     match val {
                         ParsedValue::$variant(v) => v.clone(),
-                        _ => panic!(
+                        _ => unreachable!(
                             "Argument '{name}' is not of the expected type"
                         )
                     }
