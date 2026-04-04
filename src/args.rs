@@ -1,9 +1,6 @@
 use std::{collections::HashMap, fmt::Display};
 
-use crate::macro_types::{
-    ArgumentType::{self, *},
-    FromParsedValue, ParsedValue,
-};
+use crate::macro_types::{ArgumentType, FromParsedValue, ParsedValue};
 
 pub trait ArgumentTrait {
     fn is_required(&self) -> bool;
