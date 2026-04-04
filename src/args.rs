@@ -13,8 +13,8 @@ pub trait ArgumentTrait {
 /// Type of argument to be used in case you want a required argument.
 #[derive(Debug, Clone)]
 pub struct Argument<'a> {
-    pub name: &'a str,
-    pub argtype: ArgumentType,
+    name: &'a str,
+    argtype: ArgumentType,
 }
 
 impl<'a> ArgumentTrait for Argument<'a> {
