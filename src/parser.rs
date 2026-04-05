@@ -387,4 +387,66 @@ mod tests {
         assert_eq!(parsed.get_value::<bool>("verbose"), true);
         assert_eq!(parsed.get_value::<String>("output"), "output.txt");
     }
+
+    #[test]
+    fn parse_errors_missing_required() {
+        let result = ArgumentParser::new()
+            .add_arg(Argument::from("filename", Text))
+            .parse(make_args(&[]));
+        assert!(matches!(result, Err(ParseError::MissingRequired(_))));
+    }
+
+    #[test]
+    fn parse_errors_missing_value() {
+        let result = ArgumentParser::new()
+            .add_arg(OptionalArgument::from("port", Some("p"), Integer, ParsedValue::Integer(8080)))
+            .parse(make_args(&["-p"]));
+        assert!(matches!(result, Err(ParseError::MissingValue(_))));
+    }
+
+    #[test]
+    fn parse_errors_wrong_type() {
+        let result = ArgumentParser::new()
+            .add_arg(Argument::from("count", Integer))
+            .parse(make_args(&["definitely_not_integer"]));
+        assert!(matches!(result, Err(ParseError::WrongType { .. })));
+    }
+
+    #[test]
+    fn parse_errors_unknown_argument() {
+        let result = ArgumentParser::new()
+            .add_arg(OptionalArgument::from("port", Some("p"), Integer, ParsedValue::Integer(8080)))
+            .parse(make_args(&["-c", "42"]));
+        assert!(matches!(result, Err(ParseError::UnknownArgument(_))));
+    }
+
+    #[test]
+    fn parse_errors_duplicate_argument() {
+        let result = ArgumentParser::new()
+            .add_arg(OptionalArgument::from("verbose", Some("v"), Boolean, ParsedValue::Boolean(false)))
+            .parse(make_args(&["-v", "--verbose"]));
+        assert!(matches!(result, Err(ParseError::DuplicateArgument(_))));
+    }
+
+    #[test]
+    fn parse_errors_too_many_arguments() {
+        let result = ArgumentParser::new()
+            .add_arg(Argument::from("filename", Text))
+            .parse(make_args(&["filename.txt", "extra_argument"]));
+        println!("{result:?}");
+        assert!(matches!(result, Err(ParseError::TooManyArguments)));
+    }
+
+    #[test]
+    fn parse_errors_positional_with_no_required_args() {
+        let result = ArgumentParser::new()
+            .parse(make_args(&["unexpected_argument"]));
+        assert!(matches!(result, Err(ParseError::TooManyArguments)));
+    }
+
+    #[test]
+    #[should_panic]
+    fn panic_required_boolean() {
+        ArgumentParser::new().add_arg(Argument::from("verbose", Boolean));
+    }
 }
