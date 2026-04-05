@@ -174,7 +174,7 @@ pub enum ParseError {
     MissingRequired(String),
     /// Missing value for argument
     MissingValue(String),
-    /// Different types given for argtype and default
+    /// Different types given for argtype and default or unexpected value for parsing
     WrongType {
         name: String,
         expected: ArgumentType,
