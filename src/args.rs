@@ -90,7 +90,7 @@ impl<'a> OptionalArgument<'a> {
     /// Don't use hyphens when specifying the long and short forms of the argument.
     pub fn from(
         long: &'a str,
-        short: &'a str,
+        short: Option<&'a str>,
         argtype: ArgumentType,
         default: ParsedValue,
     ) -> OptionalArgument<'a> {
