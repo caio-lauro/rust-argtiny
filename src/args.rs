@@ -94,8 +94,14 @@ impl<'a> OptionalArgument<'a> {
         argtype: ArgumentType,
         default: ParsedValue,
     ) -> OptionalArgument<'a> {
-        if !default.matches(&argtype) {
-            panic!("Argument type and default value must be of the same type.");
+        assert!(default.matches(&argtype), "argtype and default must be of the same type, got {argtype:?} and {default:?}");
+
+        assert!(!long.is_empty(), "long type of argument must be used");
+        assert!(!long.starts_with("-"), "long form must not start with '-', got: {long:?}");
+        
+        if let Some(s) = short {
+            assert!(!s.is_empty(), "If entered, short type of argument must not be empty");
+            assert!(!s.starts_with("-"), "short form must not start with '-', got: {long:?}");
         }
 
         OptionalArgument {
