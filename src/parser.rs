@@ -68,7 +68,6 @@ impl ArgumentParser {
 
         let mut parsed = ParsedArgs::new();
         let mut current_required = self.required_args.iter();
-        let mut seen_all_required = false;
         let mut parse_options = true;
         while let Some(arg) = it.next() {
             if parse_options && arg == "--" {
@@ -161,8 +160,6 @@ impl ArgumentParser {
                 } else {
                     return Err(ParseError::UnknownArgument(name));
                 }
-            } else if seen_all_required {
-                return Err(ParseError::TooManyArguments);
             } else if let Some(argument) = current_required.next() {
                 let value = match argument.get_argtype() {
                     Text => ParsedValue::Text(arg),
@@ -181,7 +178,7 @@ impl ArgumentParser {
 
                 parsed.insert(argument.get_name(), value);
             } else {
-                seen_all_required = true;
+                return Err(ParseError::TooManyArguments);
             }
         }
 
