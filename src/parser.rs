@@ -330,6 +330,13 @@ mod tests {
     }
 
     #[test]
+    fn parse_double_dash_with_nothing_after() {
+        let result = ArgumentParser::new()
+            .parse(make_args(&["--"]));
+        assert!(result.is_ok());
+    }
+
+    #[test]
     fn parse_multiple_required_arguments() {
         let parsed = ArgumentParser::new()
             .add_arg(Argument::from("input", Text))
@@ -421,10 +428,18 @@ mod tests {
     }
 
     #[test]
-    fn parse_errors_duplicate_argument() {
+    fn parse_errors_duplicate_argument_short_then_long() {
         let result = ArgumentParser::new()
             .add_arg(OptionalArgument::from("verbose", Some("v"), Boolean, ParsedValue::Boolean(false)))
             .parse(make_args(&["-v", "--verbose"]));
+        assert!(matches!(result, Err(ParseError::DuplicateArgument(_))));
+    }
+
+    #[test]
+    fn parse_errors_duplicate_argument_long_then_short() {
+        let result = ArgumentParser::new()
+            .add_arg(OptionalArgument::from("verbose", Some("v"), Boolean, ParsedValue::Boolean(false)))
+            .parse(make_args(&["--verbose", "-v"]));
         assert!(matches!(result, Err(ParseError::DuplicateArgument(_))));
     }
 
@@ -446,7 +461,17 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn panic_required_boolean() {
+    fn panics_on_get_unknown_argument() {
+        let parsed = ArgumentParser::new()
+            .add_arg(Argument::from("input", Text))
+            .parse(make_args(&["input.txt"]))
+            .unwrap();
+        parsed.get("output");
+    }
+
+    #[test]
+    #[should_panic]
+    fn panics_on_required_boolean() {
         ArgumentParser::new().add_arg(Argument::from("verbose", Boolean));
     }
 }
