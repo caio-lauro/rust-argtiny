@@ -76,13 +76,6 @@ impl ArgumentParser {
                 continue;
             }
 
-            let argument = if let Some(nxt) = current_required.next() {
-                Some(nxt)
-            } else {
-                seen_all_required = true;
-                None
-            };
-
             if parse_options && arg.starts_with("--") {
                 let name = arg[2..].to_string();
                 if let Some(&long_arg_idx) = self.long_map.get(&name) {
@@ -170,7 +163,7 @@ impl ArgumentParser {
                 }
             } else if seen_all_required {
                 return Err(ParseError::TooManyArguments);
-            } else if let Some(argument) = argument {
+            } else if let Some(argument) = current_required.next() {
                 let value = match argument.get_argtype() {
                     Text => ParsedValue::Text(arg),
                     Integer => ParsedValue::Integer(match arg.parse() {
@@ -187,6 +180,8 @@ impl ArgumentParser {
                 };
 
                 parsed.insert(argument.get_name(), value);
+            } else {
+                seen_all_required = true;
             }
         }
 
