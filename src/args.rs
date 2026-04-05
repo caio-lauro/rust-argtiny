@@ -134,6 +134,7 @@ impl<'a> OptionalArgument<'a> {
 /// For optional arguments, if given, tries to store the next
 /// available `String` as its value, converted to its type. \
 /// If not given, stores the default value.
+#[derive(Debug)]
 pub struct ParsedArgs {
     values: HashMap<String, ParsedValue>,
 }
