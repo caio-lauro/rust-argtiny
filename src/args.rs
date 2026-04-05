@@ -248,9 +248,63 @@ mod tests {
     }
 
     #[test]
+    fn optional_argument_without_short_form() {
+        OptionalArgument::from(
+            "argument",
+            None,
+            Text,
+            ParsedValue::Text(String::new()),
+        );
+    }
+
+    #[test]
     #[should_panic]
     fn optional_argument_mismatched_default_panics() {
         OptionalArgument::from("argument", Some("a"), Boolean, ParsedValue::Integer(0));
+    }
+
+    #[test]
+    #[should_panic]
+    fn optional_argument_with_dash_on_long_form_panics() {
+        OptionalArgument::from(
+            "--argument",
+            Some("a"),
+            Text,
+            ParsedValue::Text(String::new()),
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn optional_argument_with_empty_long_form_panics() {
+        OptionalArgument::from(
+            "",
+            None,
+            Text,
+            ParsedValue::Text(String::new()),
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn optional_argument_with_dash_on_short_form_panics() {
+        OptionalArgument::from(
+            "argument",
+            Some("-a"),
+            Text,
+            ParsedValue::Text(String::new()),
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn optional_argument_with_empty_short_form_panics() {
+        OptionalArgument::from(
+            "argument",
+            Some(""),
+            Text,
+            ParsedValue::Text(String::new()),
+        );
     }
 
     #[test]
