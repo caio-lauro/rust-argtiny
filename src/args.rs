@@ -55,6 +55,7 @@ impl<'a> Argument<'a> {
 /// Don't use hyphens when specifying the long and short forms of the argument. \
 /// Always use a long form, as it is considered the *name* of the argument. \
 /// The short form is optional.
+#[derive(Debug, Clone)]
 pub struct OptionalArgument<'a> {
     long: &'a str,
     short: Option<&'a str>,
