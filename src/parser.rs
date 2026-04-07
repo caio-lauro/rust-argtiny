@@ -1,12 +1,59 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt::Display};
 
-use crate::args::{ArgumentTrait, ParseError, ParsedArgs};
-use crate::macro_types::{ArgumentType::*, ParsedValue};
+use crate::args::{ArgumentTrait, ParsedArgs};
+use crate::macro_types::{ArgumentType::{self, *}, ParsedValue};
 
 struct OptionalEntry {
     arg: Box<dyn ArgumentTrait>,
     seen: bool,
 }
+
+#[derive(Debug)]
+/// Enum for errors when parsing.
+pub enum ParseError {
+    /// Required argument not given
+    MissingRequired(String),
+    /// Missing value for argument
+    MissingValue(String),
+    /// Different types given for argtype and default or unexpected value for parsing
+    WrongType {
+        name: String,
+        expected: ArgumentType,
+        given: String,
+    },
+    /// Unknown argument, not added to ArgumentParsed
+    UnknownArgument(String),
+    /// Argument already seen once
+    DuplicateArgument(String),
+    /// Number of positional arguments exceeds number of  required arguments
+    TooManyArguments,
+}
+
+impl Display for ParseError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ParseError::MissingRequired(name) => write!(f, "missing required argument: {name}"),
+            ParseError::MissingValue(name) => {
+                write!(f, "argument '{name}' requires a value but none was given")
+            }
+            ParseError::WrongType {
+                name,
+                expected,
+                given,
+            } => write!(
+                f,
+                "argument '{name}' expects value of type {expected:?} given: {given}"
+            ),
+            ParseError::UnknownArgument(name) => write!(f, "unknown argument: {name}"),
+            ParseError::DuplicateArgument(name) => {
+                write!(f, "argument '{name}' was given more than once")
+            }
+            ParseError::TooManyArguments => write!(f, "too many positional arguments"),
+        }
+    }
+}
+
+impl std::error::Error for ParseError {}
 
 /// Argument parser, to be used with std::env::args or other types that implement
 /// `IntoIterator` and have `String` as items.
