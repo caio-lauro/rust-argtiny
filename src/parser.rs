@@ -1,7 +1,10 @@
 use std::{collections::HashMap, fmt::Display};
 
 use crate::args::{ArgumentTrait, ParsedArgs};
-use crate::macro_types::{ArgumentType::{self, *}, ParsedValue};
+use crate::macro_types::{
+    ArgumentType::{self, *},
+    ParsedValue,
+};
 
 struct OptionalEntry {
     arg: Box<dyn ArgumentTrait>,
@@ -75,7 +78,11 @@ impl ArgumentParser {
         }
     }
 
-    /// Adds an argument of either type: `Argument` or `OptionalArgument`
+    /// Adds an `Argument` or `OptionalArgument` to the parser.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `Argument` is of `Boolean` type.
     pub fn add_arg(mut self, arg: impl ArgumentTrait + 'static) -> Self {
         if arg.is_required() {
             if arg.argtype() == Boolean {
@@ -103,6 +110,21 @@ impl ArgumentParser {
     ///
     /// Parses *required* arguments in the order they were given. \
     /// For *optional* arguments, if they are not seen, their default value is used.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`ParseError`] if:
+    /// - a required argument is missing MissingRequired,
+    /// - MissingValue,
+    /// - WrongType
+    /// - UnknownArgument,
+    /// - DuplicateArgument,
+    /// - TooManyArguments,
+    ///
+    /// # Panics
+    ///
+    /// Panics if `args` yields no items at all. \
+    /// When using [`std::env::args`] this will never happen.
     pub fn parse(
         mut self,
         args: impl IntoIterator<Item = String>,
