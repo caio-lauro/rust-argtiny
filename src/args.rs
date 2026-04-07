@@ -259,12 +259,7 @@ mod tests {
 
     #[test]
     fn optional_argument_without_short_form() {
-        OptionalArgument::new(
-            "argument",
-            None,
-            Text,
-            ParsedValue::Text(String::new()),
-        );
+        OptionalArgument::new("argument", None, Text, ParsedValue::Text(String::new()));
     }
 
     #[test]
@@ -287,12 +282,7 @@ mod tests {
     #[test]
     #[should_panic]
     fn optional_argument_with_empty_long_form_panics() {
-        OptionalArgument::new(
-            "",
-            None,
-            Text,
-            ParsedValue::Text(String::new()),
-        );
+        OptionalArgument::new("", None, Text, ParsedValue::Text(String::new()));
     }
 
     #[test]
@@ -309,12 +299,7 @@ mod tests {
     #[test]
     #[should_panic]
     fn optional_argument_with_empty_short_form_panics() {
-        OptionalArgument::new(
-            "argument",
-            Some(""),
-            Text,
-            ParsedValue::Text(String::new()),
-        );
+        OptionalArgument::new("argument", Some(""), Text, ParsedValue::Text(String::new()));
     }
 
     #[test]
