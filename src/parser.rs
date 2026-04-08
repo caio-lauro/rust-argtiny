@@ -69,6 +69,15 @@ pub struct ArgumentParser {
 
 impl ArgumentParser {
     /// Creates an `ArgumentParser`, which will parse any and all arguments given to it, after the **first** one.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use argparser::ArgumentParser;
+    ///
+    /// let parser = ArgumentParser::new();
+    /// ```
+    ///
     pub fn new() -> Self {
         ArgumentParser {
             required_args: vec![],
@@ -79,6 +88,21 @@ impl ArgumentParser {
     }
 
     /// Adds an `Argument` or `OptionalArgument` to the parser.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use argparser::{Argument, ArgumentParser, ArgumentType::*, OptionalArgument, ParsedValue};
+    ///
+    /// let parser = ArgumentParser::new()
+    ///     .add_arg(Argument::new("input", Text))
+    ///     .add_arg(OptionalArgument::new(
+    ///         "count", 
+    ///         Some("c"), 
+    ///         Integer, 
+    ///         ParsedValue::Integer(42)
+    ///     ));
+    /// ```
     ///
     /// # Panics
     ///
@@ -110,6 +134,18 @@ impl ArgumentParser {
     ///
     /// Parses *required* arguments in the order they were given. \
     /// For *optional* arguments, if they are not seen, their default value is used.
+    /// 
+    /// # Example
+    /// 
+    /// ```rust
+    /// use argparser::{Argument, ArgumentParser, ArgumentType::*, ParsedValue};
+    ///
+    /// let parsed = ArgumentParser::new()
+    ///     .add_arg(Argument::new("input", Text))
+    ///     .parse(["program", "input.txt"].map(String::from))?;
+    /// 
+    /// # Ok::<(), argparser::ParseError>(())
+    /// ```
     ///
     /// # Errors
     ///
