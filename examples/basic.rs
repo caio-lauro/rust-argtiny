@@ -22,10 +22,10 @@ fn main() {
         std::process::exit(1);
     });
 
-    let input = parsed.get_as::<String>("input");
-    let output = parsed.get_as::<String>("output");
-    let verbose = parsed.get_as::<bool>("verbose");
-    let count = parsed.get_as::<i64>("count");
+    let input: String = parsed.get_as("input");
+    let output: String = parsed.get_as("output");
+    let verbose: bool = parsed.get_as("verbose");
+    let count: i64 = parsed.get_as("count");
 
     if verbose {
         println!("input:  {input}");
