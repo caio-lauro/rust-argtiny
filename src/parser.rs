@@ -114,12 +114,12 @@ impl ArgumentParser {
     /// # Errors
     ///
     /// Returns [`ParseError`] if:
-    /// - a required argument is missing MissingRequired,
-    /// - MissingValue,
-    /// - WrongType
-    /// - UnknownArgument,
-    /// - DuplicateArgument,
-    /// - TooManyArguments,
+    /// - a required argument is missing ([`ParseError::MissingRequired`])
+    /// - a value is missing after an optional argument ([`ParseError::MissingValue`])
+    /// - a value cannot be converted to the expected type ([`ParseError::WrongType`])
+    /// - an unknown argument is encountered ([`ParseError::UnknownArgument`])
+    /// - an argument is given more than once ([`ParseError::DuplicateArgument`])
+    /// - more positional arguments given than expected ([`ParseError::TooManyArguments`])
     ///
     /// # Panics
     ///
