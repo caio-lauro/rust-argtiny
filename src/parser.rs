@@ -106,7 +106,7 @@ impl ArgumentParser {
     ///
     /// # Panics
     ///
-    /// Panics if `Argument` is of `Boolean` type.
+    /// Panics if a required argument (`Argument`) is of `Boolean` type.
     pub fn add_arg(mut self, arg: impl ArgumentTrait + 'static) -> Self {
         if arg.is_required() {
             if arg.argtype() == Boolean {
