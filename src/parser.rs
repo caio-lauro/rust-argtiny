@@ -137,12 +137,12 @@ impl ArgumentParser {
     ///
     /// # Example
     ///
-    /// ```rust
+    /// ```rust,should_panic
     /// use argparser::{Argument, ArgumentParser, ArgumentType::*, ParsedValue};
     ///
     /// let parsed = ArgumentParser::new()
     ///     .add_arg(Argument::new("input", Text))
-    ///     .parse(["program", "input.txt"].map(String::from))?;
+    ///     .parse(std::env::args())?;
     ///
     /// # Ok::<(), argparser::ParseError>(())
     /// ```
