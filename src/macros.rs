@@ -1,3 +1,38 @@
+/// Creates an [`Argument`] or [`OptionalArgument`] with a concise syntax.
+/// 
+/// # Syntax
+/// 
+/// ```text
+/// arg!(required: "name", Type)
+/// arg!(optional: "long", Type = default value)
+/// arg!(optional: "long", "short", Type = default value)
+/// ```
+///
+/// # Examples
+///
+/// Required argument:
+/// ```rust
+/// use argtiny::{ArgumentParser, arg};
+///
+/// let parser = ArgumentParser::new()
+///     .add_arg(arg!(required: "input", Text));
+/// ```
+///
+/// Optional argument without short form:
+/// ```rust
+/// use argtiny::{ArgumentParser, arg};
+///
+/// let parser = ArgumentParser::new()
+///     .add_arg(arg!(optional: "verbose", Boolean = false));
+/// ```
+///
+/// Optional argument with short form:
+/// ```rust
+/// use argtiny::{ArgumentParser, arg};
+///
+/// let parser = ArgumentParser::new()
+///     .add_arg(arg!(optional: "count", "c", Integer = 1));
+/// ```
 #[macro_export]
 macro_rules! arg {
     (required: $name: literal, $type: ident) => {
