@@ -159,10 +159,10 @@ impl<'a> OptionalArgument<'a> {
     }
 }
 
-/// Stores the values of the arguments given to `parse`. \
+/// Stores the values of the arguments given to [`ArgumentParser::parse`](crate::ArgumentParser). \
 /// For required arguments, stores in the order given. \
 /// For optional arguments, if given, tries to store the next
-/// available `String` as its value, converted to its type. \
+/// available [`String`] as its value, converted to its type. \
 /// If not given, stores the default value.
 #[derive(Debug)]
 pub struct ParsedArgs {
