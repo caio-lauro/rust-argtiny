@@ -325,4 +325,16 @@ mod tests {
             OptionalArgument::new("verbose", Some("v"), Boolean, ParsedValue::Boolean(false));
         assert_eq!(opt_arg.short_form(), Some("v".to_string()));
     }
+
+    #[test]
+    fn argument_description() {
+        let arg = Argument::new("input", Text).description("input file");
+        assert_eq!(arg.description, Some("input file"));
+    }
+
+    #[test]
+    fn argument_no_description() {
+        let arg = Argument::new("input", Text);
+        assert_eq!(arg.description, None);
+    }
 }
